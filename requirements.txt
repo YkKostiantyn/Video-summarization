@@ -1,0 +1,23 @@
+from mcp.server.fastmcp import FastMCP
+from starlette.responses import JSONResponse
+from starlette.requests import Request
+from services.rag_retriever import create_knowledge_base, query_knowledge_base
+
+PORT = 56000
+mcp_server = FastMCP("VideoSummarizationServer", host="0.0.0.0", port=PORT)
+
+@mcp_server.tool(description="Створює базу знань з тексту транскрипції")
+def build_knowledge_base(text: str):
+    create_knowledge_base(text)
+    return "✅ Knowledge base created from transcript!"
+
+@mcp_server.tool(description="Відповідає на запитання з бази знань")
+def ask_from_knowledge(query: str):
+    return query_knowledge_base(query)
+
+@mcp_server.custom_route("/", methods=["GET"])
+async def health_check(request: Request):
+    return JSONResponse({"status": "ok", "message": "MCP server is running"})
+
+if __name__ == "__main__":
+    mcp_server.run(transport="streamable-http")
