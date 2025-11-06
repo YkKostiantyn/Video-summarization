@@ -22,4 +22,4 @@ uploads/
 Thumbs.db
 
 # Ignore locally trained models
-\local_models\
+/local_models/
