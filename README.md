@@ -1,10 +1,5 @@
 # AI Video Summarization Tool
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python&logoColor=white)
-![Google Gemini](https://img.shields.io/badge/Google%20Gemini-8E75B2?style=for-the-badge&logo=google&logoColor=white)
-![Hugging Face](https://img.shields.io/badge/Hugging%20Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)
-![RAG](https://img.shields.io/badge/RAG-FAISS-green?style=for-the-badge)
-
 An intelligent system for automated video summarization.
 This project features a **hybrid architecture** that combines the power of cloud LLMs with the privacy of local models, utilizing **RAG (Retrieval-Augmented Generation)** to ensure high accuracy and context awareness.
 
@@ -53,8 +48,8 @@ VIDEO-SUMMARIZATION/
 
 ### 1. Clone the repository
 ```bash
-git clone [https://github.com/YOUR-USERNAME/video-summarization.git](https://github.com/YOUR-USERNAME/video-summarization.git)
-cd video-summarization
+git clone https://github.com/YkKostiantyn/Video-summarization.git
+cd Video-summarization
 ```
 
 ### 2. Create a Virtual Environment
@@ -81,7 +76,6 @@ pip install -r requirements.txt
 Create a `.env` file in the root directory and add your API keys:
 ```env
 GOOGLE_API_KEY=your_gemini_api_key
-HF_TOKEN=your_hugging_face_token
 ```
 
 ---
