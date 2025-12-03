@@ -14,6 +14,7 @@ def run_video_processing_pipeline(youtube_URL: str):
     chunks_json_path = os.path.join(upload_dir, "chunks.json")
     transcript_path = os.path.join(upload_dir, "transcript.txt")
 
+    audio_path = None
     try:
         audio_path = downl_extract_audio(youtube_URL)
         transcript_text = transcribe_audio(audio_path, filename = os.path.basename(transcript_path))
