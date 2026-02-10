@@ -1,102 +1,86 @@
-# AI Video Summarization Tool
+# AI Video Summarization Tool 🎥🤖
 
-An intelligent system for automated video summarization.
-This project features a **hybrid architecture** that combines the power of cloud LLMs with the privacy of local models, utilizing **RAG (Retrieval-Augmented Generation)** to ensure high accuracy and context awareness.
+An intelligent system for automated video summarization. This project features a **hybrid architecture** that combines the power of cloud LLMs with the privacy of local models, utilizing **RAG (Retrieval-Augmented Generation)** to ensure high accuracy and context awareness.
 
----
+## 🚀 Features
 
-## Features
+- **Smart Transcription:** Utilizes **OpenAI Whisper** for high-precision speech-to-text conversion.
+- **RAG (Retrieval-Augmented Generation):** Implements **FAISS** for vector search. The model grounds its answers in specific video segments rather than hallucinating.
+- **Hybrid Mode:**
+  - **Cloud Mode:** Leverages the **Google Gemini Pro** API for maximum detail and reasoning capabilities.
+  - **Local Mode:** Uses a fine-tuned **T5** model that is automatically downloaded from the **Hugging Face Hub** and cached locally. This allows for **local inference** on your own hardware, ensuring data privacy without sending text to third parties.
+- **Dockerized:** Fully containerized application with pre-configured environments (Python, FFmpeg, Drivers).
+- **MLOps Pipeline:** Implements a full lifecycle: Data Collection -> Fine-tuning -> Push to HF Hub -> Automatic Client Deployment.
 
-*  Smart Transcription: Utilizes **OpenAI Whisper** for high-precision speech-to-text conversion.
-*  RAG (Retrieval-Augmented Generation): Implements **FAISS** for vector search. The model grounds its answers in specific video segments rather than hallucinating.
-*  Hybrid Mode:
-    * Cloud Mode: Leverages the **Google Gemini Pro** API for maximum detail and reasoning capabilities.
-    * Local Mode: Uses a fine-tuned **T5** model that is automatically downloaded from the **Hugging Face Hub** and cached locally. This allows for **local inference** on your own hardware, ensuring data privacy without sending text to third parties.
-*  MLOps Pipeline: Implements a full lifecycle: Data Collection -> Fine-tuning -> Push to HF Hub -> Automatic Client Deployment.
+## 🛠️ Tech Stack
 
----
+- **Containerization:** Docker, Docker Compose
+- **Language:** Python 3.11
+- **LLM & AI:** Google Generative AI (Gemini), Transformers (Hugging Face)
+- **Vector Store:** FAISS (Facebook AI Similarity Search)
+- **Audio Processing:** FFmpeg, OpenAI Whisper
+- **Tools:** Pandas, Jupyter Notebooks
 
-## Tech Stack
+## 📂 Project Structure
 
-* Language: Python 3.10+
-* LLM & AI: Google Generative AI (Gemini), Transformers (Hugging Face)
-* Vector Store: FAISS (Facebook AI Similarity Search)
-* Audio Processing: FFmpeg, OpenAI Whisper
-* Tools: Pandas, Jupyter Notebooks
+    VIDEO-SUMMARIZATION/
+    ├── model_training/      # Jupyter Notebooks for T5 Model Fine-tuning
+    ├── package/
+    │   ├── pipelines/       # Orchestration logic (Video -> Text -> Summary)
+    │   ├── services/        # Core services: Gemini API, Local Model Loader, RAG Retriever
+    │   ├── uploads/         # Storage for input videos and FAISS indexes (Persisted via Docker Volume)
+    │   └── utils/           # Helper functions (File I/O, Text processing)
+    ├── app.py               # Entry point (CLI Application)
+    ├── Dockerfile           # Docker image configuration
+    ├── docker-compose.yml   # Container orchestration
+    └── requirements.txt     # Project dependencies
 
----
+## 🐳 Installation & Setup
 
-## Project Structure
+You don't need to install Python, FFmpeg, or any libraries manually. The only requirement is Docker.
 
-The project follows a modular architecture for scalability:
+### 1. Install Docker
 
-```text
-VIDEO-SUMMARIZATION/
-├── model_training/      # Jupyter Notebooks for T5 Model Fine-tuning
-├── package/
-│   ├── pipelines/       # Orchestration logic (Video -> Text -> Summary)
-│   ├── services/        # Core services: Gemini API, Local Model Loader, RAG Retriever
-│   ├── uploads/         # Storage for input videos and FAISS indexes
-│   └── utils/           # Helper functions (File I/O, Text processing)
-├── app.py               # Entry point (CLI Application)
-└── requirements.txt     # Project dependencies
-```
+Before starting, ensure you have Docker installed and **running**:
 
----
+* **Windows / macOS:** Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+* **Linux (Ubuntu/Debian):**
 
-## Installation & Setup
+        sudo apt-get update
+        sudo apt-get install docker.io docker-compose
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/YkKostiantyn/Video-summarization.git
-cd Video-summarization
-```
+### 2. Clone the Repository
 
-### 2. Create a Virtual Environment
-```bash
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# macOS/Linux
-source venv/bin/activate
-```
+    git clone [https://github.com/YkKostiantyn/Video-summarization.git](https://github.com/YkKostiantyn/Video-summarization.git)
+    cd Video-summarization
 
-### 3. Install System Dependencies
-**FFmpeg** is required for audio extraction. Ensure it is installed and added to your PATH:
-* **Windows:** `winget install ffmpeg` (or download from the official site)
-* **Ubuntu/Debian:** `sudo apt install ffmpeg`
-* **macOS:** `brew install ffmpeg`
+### 3. Environment Configuration
 
-### 4. Install Python Dependencies
-```bash
-pip install -r requirements.txt
-```
+Create a `.env` file in the root directory. This is required for the Gemini API.
 
-### 5. Environment Configuration (.env)
-Create a `.env` file in the root directory and add your API keys:
-```env
-GOOGLE_API_KEY=your_gemini_api_key
-```
+    # Create a file named .env and add your key:
+    GOOGLE_API_KEY=your_gemini_api_key_here
 
----
+### 4. Run the Application
 
-## Usage
+Open your terminal in the project folder and run:
 
-### Run:
+    docker-compose up --build
 
-```bash
-python app.py
-```
-And place your video link in the path when prompted.
+*Note: The first launch may take a few minutes as it downloads the base image (approx. 1-2GB) and AI models.*
 
-The pipeline will perform the following:
-1.  Extract audio from the video.
-2.  Transcribe audio using Whisper.
-3.  Build a vector index (FAISS).
-4.  Generate a summary (using Gemini or the Local T5 model).
+## 🖥️ Usage
 
----
+Once the container starts, you will see an interactive menu in your terminal:
 
-## License
+1.  **Select the Model:** Choose between **1: Local T5** (Privacy focused) or **2: Gemini** (Cloud power).
+2.  **Provide Video URL:** Paste a YouTube link when prompted.
+3.  **Ask Questions:** Interact with the video content via chat.
+
+**Note:** All downloaded videos, transcripts, and FAISS indexes are saved in the `package/uploads/` folder on your local machine, so you can access them even after stopping Docker.
+
+To stop the application, press `Ctrl+C` in the terminal.
+
+## 📜 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
