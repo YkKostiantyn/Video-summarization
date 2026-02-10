@@ -20,7 +20,3 @@ uploads/
 # OS files
 .DS_Store
 Thumbs.db
-
-# Ignore locally trained models
-/local_models/
-push_model.py
