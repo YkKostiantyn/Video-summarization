@@ -18,6 +18,10 @@ def run_video_processing_pipeline(youtube_URL: str):
     try:
         audio_path = downl_extract_audio(youtube_URL)
         transcript_text = transcribe_audio(audio_path, filename = os.path.basename(transcript_path))
+
+        with open(transcript_path, "w", encoding="utf-8") as f:
+            f.write(transcript_text)
+
         build_chunks_index(transcript_text, faiss_index_path, chunks_json_path)
 
         return faiss_index_path, chunks_json_path

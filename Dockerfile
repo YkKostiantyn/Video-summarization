@@ -15,9 +15,9 @@ WORKDIR /app
 # 3. Копіюємо файл залежностей
 COPY requirements.txt .
 
-# 4. Встановлюємо бібліотеки
+RUN pip install --upgrade pip
 # --no-cache-dir зменшує розмір образу
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --default-timeout=100 -r requirements.txt
 
 # 5. Копіюємо весь код проєкту
 COPY . .
