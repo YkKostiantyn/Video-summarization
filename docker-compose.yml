@@ -3,19 +3,20 @@ version: '3.8'
 services:
   video-summarizer:
     build: .
-    # ВАЖЛИВО: Ці дві опції дозволяють використовувати input()
-    stdin_open: true # аналог -i
-    tty: true        # аналог -t
     
-    # Підключаємо .env файл для ключів Gemini/HuggingFace
+    ports:
+      - "8501:8501"
+      
+    command: streamlit run streamlit_app.py --server.address=0.0.0.0 --server.port=8501
+
+    stdin_open: true 
+    tty: true        
+    
     env_file:
       - .env
     
-    # Монтуємо папку, щоб завантажені моделі та відео
-    # зберігалися на твоєму комп'ютері, а не зникали
     volumes:
       - .:/app
-      # Можна закешувати моделі HuggingFace, щоб не качати їх щоразу
       - huggingface_cache:/root/.cache/huggingface
 
 volumes:

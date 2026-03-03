@@ -10,7 +10,7 @@ if PACKAGE_DIR not in sys.path:
 
 from package.pipelines.video_summary import run_video_processing_pipeline
 from package.services.rag_retriever import rag_answer
-from package.services.local_t5 import LocalT5
+from package.services.local_bart import LocalBART  # Наш новий клас
 from package.services.gemini import GeminiService
 
 load_dotenv()
@@ -21,10 +21,14 @@ st.title("Video Summarization UI")
 
 with st.sidebar:
     st.header("Settings")
-    model_choice = st.selectbox("Preferred model (lazy init)", ["Auto (best available)", "Local T5", "Gemini"])
-    t5_hf_id = st.text_input("Local T5 HF id/path", value=os.getenv("HF_ID", "YKostiantyn/t5-base-tuned-video-summarizer"))
+    # Змінили Local T5 на Local BART
+    model_choice = st.selectbox("Preferred model", ["Auto (best available)", "Local BART", "Gemini"])
+    
+    # Встановили твій репозиторій за замовчуванням
+    bart_hf_id = st.text_input("Local BART HF id/path", value=os.getenv("HF_ID", "YKostiantyn/fine-tuned-bart-model-summarizer"))
     gemini_key = st.text_input("Gemini API key", value=os.getenv("GOOGLE_API_KEY", ""))
 
+# Ініціалізація стану сесії
 if "index_path" not in st.session_state:
     st.session_state.index_path = None
 if "chunks_path" not in st.session_state:
@@ -33,6 +37,8 @@ if "transcript" not in st.session_state:
     st.session_state.transcript = None
 if "service" not in st.session_state:
     st.session_state.service = None
+if "service_name" not in st.session_state:
+    st.session_state.service_name = None
 
 yt_url = st.text_input("YouTube video URL", help="Enter YouTube URL to process (eg. https://www.youtube.com/watch?v=...)")
 
@@ -70,6 +76,7 @@ st.markdown("---")
 
 st.header("Ask a question about the video")
 query = st.text_input("Your question")
+
 if st.button("Ask"):
     if not st.session_state.index_path or not st.session_state.chunks_path:
         st.warning("No processed video found. Run `Process Video` first.")
@@ -79,39 +86,47 @@ if st.button("Ask"):
         with st.spinner("Retrieving context and generating answer..."):
             rag_prompt = rag_answer(query, st.session_state.index_path, st.session_state.chunks_path)
 
-            # Initialize chosen service lazily
             service = None
-            if model_choice == "Local T5" or (model_choice == "Auto (best available)" and not gemini_key):
-                try:
-                    service = LocalT5(model_path=t5_hf_id)
-                    st.session_state.service = service
-                except Exception as e:
-                    st.error(f"Could not initialize Local T5: {e}")
-                    service = None
-
-            if model_choice == "Gemini" or (model_choice == "Auto (best available)" and gemini_key):
-                if gemini_key:
+            
+            # Логіка для Local BART
+            if model_choice == "Local BART" or (model_choice == "Auto (best available)" and not gemini_key):
+                # Перевіряємо, чи ми вже завантажували цю модель раніше
+                if st.session_state.service_name != "BART":
                     try:
-                        service = GeminiService(api_key=gemini_key)
+                        st.info("Loading BART model into memory... This might take a few seconds.")
+                        service = LocalBART(model_path=bart_hf_id)
                         st.session_state.service = service
+                        st.session_state.service_name = "BART"
                     except Exception as e:
-                        st.error(f"Could not initialize Gemini service: {e}")
+                        st.error(f"Could not initialize Local BART: {e}")
+                        service = None
                 else:
-                    if not service:
-                        st.warning("Gemini key not provided — please set in sidebar or .env")
+                    service = st.session_state.service
 
-            if not service and st.session_state.service:
-                service = st.session_state.service
+            # Логіка для Gemini
+            elif model_choice == "Gemini" or (model_choice == "Auto (best available)" and gemini_key):
+                if gemini_key:
+                    if st.session_state.service_name != "Gemini":
+                        try:
+                            service = GeminiService(api_key=gemini_key)
+                            st.session_state.service = service
+                            st.session_state.service_name = "Gemini"
+                        except Exception as e:
+                            st.error(f"Could not initialize Gemini service: {e}")
+                    else:
+                        service = st.session_state.service
+                else:
+                    st.warning("Gemini key not provided — please set in sidebar or .env")
 
             if not service:
                 st.error("No answer-generation service available.")
             else:
                 try:
                     answer = service.generate_answer(rag_prompt)
-                    st.subheader("Answer")
+                    st.subheader(f"Answer (via {st.session_state.service_name})")
                     st.write(answer)
                 except Exception as e:
                     st.error(f"Error generating answer: {e}")
 
 st.markdown("---")
-st.caption("This Streamlit app runs the existing pipeline and uses available models to answer questions.")
+st.caption("This Streamlit app runs the existing pipeline and uses your fine-tuned BART model to answer questions.")

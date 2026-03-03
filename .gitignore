@@ -4,14 +4,23 @@
 # Python cache
 __pycache__/
 *.pyc
+*/__pycache__/*
 
 # Virtual environment
 venv/
 .env/
 
 # Uploads / temp data
-uploads/
+package/uploads/*
+!package/uploads/.gitkeep
 *.wav
+
+# Machine Learning / Jupyter cache
+.ipynb_checkpoints/
+*.safetensors
+*.pt
+*.bin
+*.h5
 
 # IDE files
 .vscode/
