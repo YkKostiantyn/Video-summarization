@@ -3,18 +3,15 @@ from dotenv import load_dotenv
 from pipelines.video_summary import run_video_processing_pipeline
 from services.rag_retriever import rag_answer
 from services.gemini import GeminiService
-# 1. Змінили імпорт з LocalT5 на LocalBART
 from services.local_bart import LocalBART 
 
 def main():
     load_dotenv()
 
-    # 2. Вказали репозиторій твоєї свіжої моделі BART
     HF_ID = "YKostiantyn/fine-tuned-bart-model-summarizer"
     bart_service = None
     
     try:
-        # 3. Ініціалізуємо сервіс BART
         bart_service = LocalBART(model_path=HF_ID)
         print(f"BART Service initialized from Hub: {HF_ID}")
     except Exception as e:
@@ -37,7 +34,7 @@ def main():
     while chosen_service is None:
         print("Which model do you want to use for answers?")
         if bart_service:
-            print("1: Local BART") # Оновили текст меню
+            print("1: Local BART")
         if gemini_service:
             print("2: Gemini")
         

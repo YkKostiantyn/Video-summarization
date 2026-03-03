@@ -3,14 +3,13 @@ import sys
 from dotenv import load_dotenv
 import streamlit as st
 
-# Ensure the 'package' folder is importable when running from project root
 PACKAGE_DIR = os.path.join(os.path.dirname(__file__), "package")
 if PACKAGE_DIR not in sys.path:
     sys.path.insert(0, PACKAGE_DIR)
 
 from package.pipelines.video_summary import run_video_processing_pipeline
 from package.services.rag_retriever import rag_answer
-from package.services.local_bart import LocalBART  # Наш новий клас
+from package.services.local_bart import LocalBART 
 from package.services.gemini import GeminiService
 
 load_dotenv()
@@ -21,14 +20,11 @@ st.title("Video Summarization UI")
 
 with st.sidebar:
     st.header("Settings")
-    # Змінили Local T5 на Local BART
     model_choice = st.selectbox("Preferred model", ["Auto (best available)", "Local BART", "Gemini"])
     
-    # Встановили твій репозиторій за замовчуванням
     bart_hf_id = st.text_input("Local BART HF id/path", value=os.getenv("HF_ID", "YKostiantyn/fine-tuned-bart-model-summarizer"))
     gemini_key = st.text_input("Gemini API key", value=os.getenv("GOOGLE_API_KEY", ""))
 
-# Ініціалізація стану сесії
 if "index_path" not in st.session_state:
     st.session_state.index_path = None
 if "chunks_path" not in st.session_state:
@@ -88,9 +84,7 @@ if st.button("Ask"):
 
             service = None
             
-            # Логіка для Local BART
             if model_choice == "Local BART" or (model_choice == "Auto (best available)" and not gemini_key):
-                # Перевіряємо, чи ми вже завантажували цю модель раніше
                 if st.session_state.service_name != "BART":
                     try:
                         st.info("Loading BART model into memory... This might take a few seconds.")
@@ -103,7 +97,6 @@ if st.button("Ask"):
                 else:
                     service = st.session_state.service
 
-            # Логіка для Gemini
             elif model_choice == "Gemini" or (model_choice == "Auto (best available)" and gemini_key):
                 if gemini_key:
                     if st.session_state.service_name != "Gemini":

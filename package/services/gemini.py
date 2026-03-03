@@ -5,11 +5,9 @@ import os
 class GeminiService:
     def __init__(self, api_key: str, model_name: str = "gemini-flash-latest"):
         try:
-            # Створюємо клієнта замість genai.configure
             self.client = genai.Client(api_key=api_key)
             self.model_name = model_name
             
-            # Налаштування безпеки в новому форматі
             self.safety_settings = [
                 types.SafetySetting(
                     category="HARM_CATEGORY_HATE_SPEECH",
@@ -39,7 +37,6 @@ class GeminiService:
             return "Error: Gemini client was not initialized."
 
         try:
-            # Викликаємо генерацію через client.models
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=rag_prompt,
@@ -55,7 +52,6 @@ class GeminiService:
 
         except Exception as e:
             print(f"Error calling Gemini API: {e}")
-            # Перевірка на блокування через безпеку в новому форматі
             if "finish_reason" in str(e).lower() or "safety" in str(e).lower():
                 return "Error: The response was blocked due to safety settings."
             return "Error: Could not get answer from Gemini."
