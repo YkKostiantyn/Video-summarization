@@ -1,4 +1,4 @@
-# AI Video Summarization Tool 🎥🤖
+# AI Video Summarization Tool 
 
 An intelligent system for automated video summarization. This project features a **hybrid architecture** that combines the power of cloud LLMs with the privacy of local models, utilizing **RAG (Retrieval-Augmented Generation)** to ensure high accuracy and context awareness.
 
@@ -12,7 +12,7 @@ An intelligent system for automated video summarization. This project features a
 - **Dockerized:** Fully containerized application with pre-configured environments (Python, FFmpeg, Drivers).
 - **MLOps Pipeline:** Implements a full lifecycle: Data Collection -> Fine-tuning -> Push to HF Hub -> Automatic Client Deployment.
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 - **Containerization:** Docker, Docker Compose
 - **Language:** Python 3.11
@@ -21,7 +21,7 @@ An intelligent system for automated video summarization. This project features a
 - **Audio Processing:** FFmpeg, OpenAI Whisper
 - **Tools:** Pandas, Jupyter Notebooks
 
-## 📂 Project Structure
+##  Project Structure
 
     VIDEO-SUMMARIZATION/
     ├── model_training/      # Jupyter Notebooks for T5 Model Fine-tuning
@@ -35,7 +35,7 @@ An intelligent system for automated video summarization. This project features a
     ├── docker-compose.yml   # Container orchestration
     └── requirements.txt     # Project dependencies
 
-## 🐳 Installation & Setup
+##  Installation & Setup
 
 You don't need to install Python, FFmpeg, or any libraries manually. The only requirement is Docker.
 
@@ -69,7 +69,7 @@ Open your terminal in the project folder and run:
 
 *Note: The first launch may take a few minutes as it downloads the base image (approx. 1-2GB) and AI models.*
 
-## 🖥️ Usage
+##  Usage
 
 Once the container starts, you will see an interactive menu in your terminal:
 
@@ -81,6 +81,6 @@ Once the container starts, you will see an interactive menu in your terminal:
 
 To stop the application, press `Ctrl+C` in the terminal.
 
-## 📜 License
+##  License
 
 Distributed under the MIT License. See `LICENSE` for more information.
