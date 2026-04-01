@@ -2,7 +2,7 @@
 
 An intelligent system for automated video summarization. This project features a **hybrid architecture** that combines the power of cloud LLMs with the privacy of local models, utilizing **RAG (Retrieval-Augmented Generation)** to ensure high accuracy and context awareness.
 
-## 🚀 Features
+##  Features
 
 - **Smart Transcription:** Utilizes **OpenAI Whisper** for high-precision speech-to-text conversion.
 - **RAG (Retrieval-Augmented Generation):** Implements **FAISS** for vector search. The model grounds its answers in specific video segments rather than hallucinating.
